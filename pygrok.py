@@ -17,7 +17,7 @@ def check_connection():
 while not check_connection(): time.sleep(1)
 
 hostname = env["HOSTNAME"]
-target_ip = subprocess.getoutput("ip route | grep default").split()[2]
+target_ip = env.get("DESTINATION", subprocess.getoutput("ip route | grep default").split()[2])
 ngrok = Ngrok("./ngrok." + env["ARCH"], env["NGROK_TOKEN"], env["PROTOCOL"], target_ip, int(env["PORT"]), env["REGION"])
 totp = TOTP(env["TOTP_SECRET"]) if env.get("TOTP_SECRET") else None
 bot_owner = int(env["TELEGRAM_BOT_OWNER"])

@@ -15,4 +15,5 @@ services:
       ARCH: 'x86'
       PROTOCOL: 'tcp'  # example config for ssh
       PORT: 22
+#      DESTINATION: 'other-container'
       HOSTNAME: 'my device'
