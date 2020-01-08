@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  pygrok:
+    container_name: pygrok
+    image: defelo/pygrok
+    restart: always
+    environment:
+      NGROK_TOKEN: 'REPLACE'
+      REGION: 'eu'
+      TOTP_SECRET: 'REPLACE'
+      TELEGRAM_BOT_TOKEN: 'REPLACE'
+      TELEGRAM_BOT_OWNER: 'REPLACE'
+      ARCH: 'x86'
+      PROTOCOL: 'tcp'  # example config for ssh
+      PORT: 22
+      HOSTNAME: 'my device'
