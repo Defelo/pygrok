@@ -3,8 +3,9 @@ services:
   pygrok:
     container_name: pygrok
     image: defelo/pygrok
-    restart: always
     build: .
+    restart: always
+    tty: true
     environment:
       NGROK_TOKEN: 'REPLACE'
       REGION: 'eu'

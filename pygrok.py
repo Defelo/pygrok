@@ -18,9 +18,9 @@ while not check_connection(): time.sleep(1)
 
 hostname = env["HOSTNAME"]
 target_ip = subprocess.getoutput("ip route | grep default").split()[2]
-ngrok = Ngrok("./ngrok." + env["ARCH"], env["NGROK_TOKEN"], env["PROTOCOL"], target_ip, int(env["PORT"]), os.environ["REGION"])
-totp = TOTP(os.environ["TOTP_SECRET"])
-bot_owner = int(os.environ["TELEGRAM_BOT_OWNER"])
+ngrok = Ngrok("./ngrok." + env["ARCH"], env["NGROK_TOKEN"], env["PROTOCOL"], target_ip, int(env["PORT"]), env["REGION"])
+totp = TOTP(env["TOTP_SECRET"]) if env.get("TOTP_SECRET") else None
+bot_owner = int(env["TELEGRAM_BOT_OWNER"])
 
 expecting_authentication = False
 
@@ -34,7 +34,7 @@ def on_update(bot, update):
     text = message["text"]
     chat = message["chat"]["id"]
     if expecting_authentication:
-        if totp.verify(text):
+        if totp is None or totp.verify(text):
             ip = ngrok.start()
             bot.send_message(chat, f"Ngrok instance has been started.\nPort {ngrok.port} of {hostname} is now available at {ip}")
         else:
@@ -54,6 +54,11 @@ def on_update(bot, update):
             else:
                 bot.send_message(chat, "Ngrok is not running.")
 
-telegram_bot = TelegramBot(os.environ["TELEGRAM_BOT_TOKEN"])
-telegram_bot.send_message(bot_owner, f"{hostname} is now up and running. Type /start to forward port {ngrok.port} via ngrok.")
-telegram_bot.run(on_update)
+if env.get("TELEGRAM_BOT_TOKEN"):
+    telegram_bot = TelegramBot(env["TELEGRAM_BOT_TOKEN"])
+    telegram_bot.send_message(bot_owner, f"{hostname} is now up and running. Type /start to forward port {ngrok.port} via ngrok.")
+    telegram_bot.run(on_update)
+else:
+    print(ngrok.start())
+    while True:
+        time.sleep(1)
