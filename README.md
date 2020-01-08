@@ -1,2 +1,2 @@
 # pygrok
-a python wrapper for ngrok
+A dockerized Python wrapper for [ngrok](https://ngrok.com/)
